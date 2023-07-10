@@ -1,0 +1,43 @@
+fix the below errors
+
+
+│ Error: Unsupported Terraform Core version
+│
+│   on backend.tf line 4, in terraform:
+│    4:   required_version = "~>0.12.0"
+│
+│ This configuration does not support Terraform version 1.0.10. To proceed, either choose another supported Terraform version or update this version constraint. Version      
+│ constraints are normally set for good reason, so updating the constraint may lead to other errors or unexpected behavior.
+╵
+
+╷
+│ Error: Unsupported Terraform Core version
+│ 
+│   on .terraform/modules/dynamodb_table.dynamodb_autoscaler.default_label/versions.tf line 2, in terraform:
+│    2:   required_version = "~>0.12.0"
+│
+│ Module module.dynamodb_table.module.dynamodb_autoscaler.module.default_label (from git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0) does not    
+│ support Terraform version 1.0.10. To proceed, either choose another supported Terraform version or update this version constraint. Version constraints are normally set for 
+│ good reason, so updating the constraint may lead to other errors or unexpected behavior.
+╵
+
+╷
+│ Error: Unsupported Terraform Core version
+│
+│   on .terraform/modules/dynamodb_table.dynamodb_autoscaler/versions.tf line 2, in terraform:
+│    2:   required_version = "~> 0.12.0"
+│
+│ Module module.dynamodb_table.module.dynamodb_autoscaler (from git::https://github.com/cloudposse/terraform-aws-dynamodb-autoscaler.git?ref=tags/0.5.0) does not support     
+│ Terraform version 1.0.10. To proceed, either choose another supported Terraform version or update this version constraint. Version constraints are normally set for good    
+│ reason, so updating the constraint may lead to other errors or unexpected behavior.
+╵
+
+╷
+│ Error: Unsupported Terraform Core version
+│
+│   on .terraform/modules/dynamodb_table.dynamodb_label/versions.tf line 2, in terraform:
+│    2:   required_version = "~> 0.12.0"
+│
+│ Module module.dynamodb_table.module.dynamodb_label (from git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0) does not support Terraform version    
+│ 1.0.10. To proceed, either choose another supported Terraform version or update this version constraint. Version constraints are normally set for good reason, so updating  
+│ the constraint may lead to other errors or unexpected behavior.
