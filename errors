@@ -1,21 +1,131 @@
-Error: Invalid legacy provider address
-│
-│ This configuration or its associated state refers to the unqualified provider "template".
-│
-│ You must complete the Terraform 0.13 upgrade process before upgrading to later versions.
-╵
+based on the below code i have created a glue database and table so I'm executing the query in athena using the beloe query please fix the issue
 
-╷
-│ Error: Invalid legacy provider address
-│
-│ This configuration or its associated state refers to the unqualified provider "aws".
-│
-│ You must complete the Terraform 0.13 upgrade process before upgrading to later versions.
-╵
+error:
 
-╷
-│ Error: Invalid legacy provider address
-│
-│ This configuration or its associated state refers to the unqualified provider "null".
-│
-│ You must complete the Terraform 0.13 upgrade process before upgrading to later versions.
+HIVE_UNKNOWN_ERROR: io.trino.plugin.hive.s3.TrinoS3FileSystem$UnrecoverableS3OperationException: com.amazonaws.services.s3.model.AmazonS3Exception: The specified key does not exist. (Service: Amazon S3; Status Code: 404; Error Code: NoSuchKey; Request ID: FF8ZMNYA8HVBZ52J; S3 Extended Request ID: 2EBHwW6R+0Mc8bt80d4qHCUOOJ+1hIjsQI8vR8ASTyyj3da3DJ4gH58q+BbqcovTr2/9konYAzI=; Proxy: null), S3 Extended Request ID: 2EBHwW6R+0Mc8bt80d4qHCUOOJ+1hIjsQI8vR8ASTyyj3da3DJ4gH58q+BbqcovTr2/9konYAzI= (Bucket: gold-datdl-glue-lakeformat, Key: grip_t_dot_open/_symlink_format_manifest/year=2023)
+This query ran against the "database1" database, unless qualified by the query. P
+
+query:
+
+SELECT * FROM "AwsDataCatalog"."database1"."table1";
+
+code:
+tf/modules/database/database1/main.tf
+variable "database" {}
+
+resource "aws_glue_catalog_table" "table" {
+  name          = "table1"
+  database_name = var.database
+
+  table_type = "EXTERNAL_TABLE"
+
+  parameters = {
+    "classification" = "parquet"
+  }
+
+  storage_descriptor {
+    columns {
+      name    = "status"
+      type    = "string"
+      comment = "Status of the task"
+    }
+    columns {
+      name    = "assignee"
+      type    = "string"
+      comment = "Assignee of the task"
+    }
+    columns {
+      name    = "new_feature_link"
+      type    = "string"
+      comment = "Link to the new feature"
+    }
+    columns {
+      name    = "updated"
+      type    = "string"
+      comment = "Updated timestamp"
+    }
+    columns {
+      name    = "priority"
+      type    = "string"
+      comment = "Priority of the task"
+    }
+    columns {
+      name    = "insert_date"
+      type    = "string"
+      comment = "Date of insertion"
+    }
+    columns {
+      name    = "reporter"
+      type    = "string"
+      comment = "Reporter of the task"
+    }
+    columns {
+      name    = "resolutiondate"
+      type    = "string"
+      comment = "Resolution date"
+    }
+    columns {
+      name    = "story_point"
+      type    = "binary"
+      comment = "Story point as binary"
+    }
+    columns {
+      name    = "created"
+      type    = "string"
+      comment = "Creation timestamp"
+    }
+    columns {
+      name    = "type"
+      type    = "string"
+      comment = "Type of task"
+    }
+    columns {
+      name    = "identifier"
+      type    = "string"
+      comment = "Task identifier"
+    }
+    columns {
+      name    = "summary"
+      type    = "string"
+      comment = "Task summary"
+    }
+    columns {
+      name    = "sprint"
+      type    = "string"
+      comment = "Sprint information"
+    }
+    columns {
+      name    = "component"
+      type    = "string"
+      comment = "Component information"
+    }
+    columns {
+      name    = "resolution"
+      type    = "string"
+      comment = "Resolution details"
+    }
+
+    input_format  = "org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+    ser_de_info {
+      name                  = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+
+    location = "s3://gold-datdl-glue-lakeformat/grip_t_dot_open/_symlink_format_manifest/"
+  }
+}
+
+tf/modules/database/database1/main.tf
+
+resource "aws_glue_catalog_database" "database1" {
+  name = "database1"
+  description = "This is an example Glue Database created with Terraform"
+  # other database configuration
+}
+
+module "table1" {
+  source    = "./tables/table1"
+  database  = aws_glue_catalog_database.database1.name
+  # other variables for the table module if needed
+}
