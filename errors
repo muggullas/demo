@@ -1,20 +1,233 @@
-based on the below code how to define subnet group here 
+based on the below script after i created i cannot see the partitions in the glue datable in aws fix this issue and update the code if any changes
+
+variable "database" {}
+
+resource "aws_glue_catalog_table" "example" {
+  database_name = var.database
+  name     = "test"
+
+  table_type = "EXTERNAL_TABLE"
+
+  parameters = {
+    "EXTERNAL"                  = "TRUE"
+    "CrawlerSchemaDeserializerVersion" = "1.0"
+    "CrawlerSchemaSerializerVersion"   = "1.0"
+    "UPDATED_BY_CRAWLER"        = "CRAWLER_DC_T_OSS_CLOSED"
+    "areColumnsQuoted"          = "false"
+    "averageRecordSize"         = "295"
+    "classification"            = "csv"
+    "columnsOrdered"            = "true"
+    "compressionType"           = "none"
+    "delimiter"                 = ","
+    "objectCount"               = "8"
+    "recordCount"               = "9303"
+    "sizeKey"                   = "2767656"
+    "skip.header.line.count"    = "1"
+    "typeOfData"                = "file"
+  }
+
+  partition_keys {
+    name = "year"
+    type = "string"
+  }
+
+  partition_keys {
+    name = "partition_1"
+    type = "string"
+  }
+
+  partition_keys {
+    name = "partition_2"
+    type = "string"
+  }
+
+  storage_descriptor {
+    location = "s3:///"
+
+    columns {
+      name    = "issuetype"
+      type    = "string"
+      comment = "issue"
+    }
+
+    columns {
+      name    = "close_date"
+      type    = "string"
+      comment = "date"
+    }
+
+    columns {
+      name    = "required_version"
+      type    = "string"
+      comment = "version"
+    }
+
+    columns {
+      name    = "story_point"
+      type    = "string"
+      comment = "point"
+    }
+
+    columns {
+      name    = "dev_effort"
+      type    = "string"
+      comment = "dev"
+    }
+
+    columns {
+      name    = "est_savings_fy_teuro"
+      type    = "string"
+      comment = "est"
+    }
+    columns {
+      name    = "resolution"
+      type    = "string"
+      comment = "resolution"
+    }
+
+    columns {
+      name    = "test_effort"
+      type    = "string"
+      comment = "test"
+    }
+
+    columns {
+      name    = "fix_versions"
+      type    = "string"
+      comment = "fix"
+    }
+
+    columns {
+      name    = "affects_version"
+      type    = "string"
+      comment = "ver"
+    }
+
+    columns {
+      name    = "planned_version"
+      type    = "string"
+      comment = "plan"
+    }
+
+    columns {
+      name    = "external_effort_md"
+      type    = "string"
+      comment = "ext"
+    }
+
+    columns {
+      name    = "int_effort"
+      type    = "string"
+      comment = "int"
+    }
+    columns {
+      name    = "key"
+      type    = "string"
+      comment = "primary key"
+    }
+
+    columns {
+      name    = "summary"
+      type    = "string"
+      comment = "sum"
+    }
+
+    columns {
+      name    = "compass_group"
+      type    = "string"
+      comment = "grp"
+    }
+
+    columns {
+      name    = "est_ressource_savings_fy_md"
+      type    = "string"
+      comment = "save"
+    }
+
+    columns {
+      name    = "status_group"
+      type    = "string"
+      comment = "status"
+    }
+
+    columns {
+      name    = "created"
+      type    = "string"
+      comment = "cr"
+    }
+
+    columns {
+      name    = "insert_date"
+      type    = "string"
+      comment = "ins"
+    }
+    columns {
+      name    = "reporter"
+      type    = "string"
+      comment = "re"
+    }
+
+    columns {
+      name    = "priority"
+      type    = "string"
+      comment = "pri"
+    }
+
+    columns {
+      name    = "est_budget_of_expenses_keuro"
+      type    = "string"
+      comment = "budg"
+    }
+
+    columns {
+      name    = "app_name"
+      type    = "string"
+      comment = "app"
+    }
+
+    columns {
+      name    = "compass_group_2"
+      type    = "string"
+      comment = "comp"
+    }
+
+    columns {
+      name    = "environment"
+      type    = "string"
+      comment = "env"
+    }
+
+    columns {
+      name    = "compass_group_1"
+      type    = "string"
+      comment = "grp1"
+    }
+    columns {
+      name    = "assignee"
+      type    = "string"
+      comment = "ee"
+    }
+
+    columns {
+      name    = "updated"
+      type    = "string"
+      comment = "up"
+    }
+
+    columns {
+      name    = "status"
+      type    = "string"
+      comment = "stat"
+    }
+
+    # Define other columns similarly
 
 
-resource "aws_redshift_cluster" "redshift" {
-  cluster_identifier      = "dat-cluster-123"
-  node_type               = "dc2.large"
-  master_username         = "masteruser"
-  master_password         = "Password123"
-  skip_final_snapshot     = true
-  cluster_parameter_group_name = "default.redshift-1.0"
-
-  # Other Redshift cluster settings can be added here
+    ser_de_info {
+      name                  = "CSV"
+      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+    }
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+  }
 }
-
-Error: UnauthorizedOperation: Access Denied. Please ensure that your IAM Permissions allow this operation.
-        status code: 400, request id: 1d351490-10d7-450d-932f-af06783b82fb
-
-  on modules/redshift/main.tf line 1, in resource "aws_redshift_cluster" "redshift":
-   1: resource "aws_redshift_cluster" "redshift" {
-
