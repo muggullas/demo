@@ -1,29 +1,19 @@
-based on the below script after i created i cannot see the partitions in the glue datable in aws fix this issue and update the code if any changes
+based on the beow code3 inser this feild also 
+
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1694071864')
+code:
 
 variable "database" {}
 
-resource "aws_glue_catalog_table" "example" {
+resource "aws_glue_catalog_table" "table" {
   database_name = var.database
-  name     = "test"
+  name          = "grip"
 
   table_type = "EXTERNAL_TABLE"
 
   parameters = {
-    "EXTERNAL"                  = "TRUE"
-    "CrawlerSchemaDeserializerVersion" = "1.0"
-    "CrawlerSchemaSerializerVersion"   = "1.0"
-    "UPDATED_BY_CRAWLER"        = "CRAWLER_DC_T_OSS_CLOSED"
-    "areColumnsQuoted"          = "false"
-    "averageRecordSize"         = "295"
-    "classification"            = "csv"
-    "columnsOrdered"            = "true"
-    "compressionType"           = "none"
-    "delimiter"                 = ","
-    "objectCount"               = "8"
-    "recordCount"               = "9303"
-    "sizeKey"                   = "2767656"
-    "skip.header.line.count"    = "1"
-    "typeOfData"                = "file"
+    "EXTERNAL" = "TRUE"
   }
 
   partition_keys {
@@ -32,12 +22,12 @@ resource "aws_glue_catalog_table" "example" {
   }
 
   partition_keys {
-    name = "partition_1"
+    name = "month"
     type = "string"
   }
 
   partition_keys {
-    name = "partition_2"
+    name = "day"
     type = "string"
   }
 
@@ -45,189 +35,96 @@ resource "aws_glue_catalog_table" "example" {
     location = "s3:///"
 
     columns {
-      name    = "issuetype"
+      name    = "status"
       type    = "string"
-      comment = "issue"
-    }
-
-    columns {
-      name    = "close_date"
-      type    = "string"
-      comment = "date"
-    }
-
-    columns {
-      name    = "required_version"
-      type    = "string"
-      comment = "version"
-    }
-
-    columns {
-      name    = "story_point"
-      type    = "string"
-      comment = "point"
-    }
-
-    columns {
-      name    = "dev_effort"
-      type    = "string"
-      comment = "dev"
-    }
-
-    columns {
-      name    = "est_savings_fy_teuro"
-      type    = "string"
-      comment = "est"
-    }
-    columns {
-      name    = "resolution"
-      type    = "string"
-      comment = "resolution"
-    }
-
-    columns {
-      name    = "test_effort"
-      type    = "string"
-      comment = "test"
-    }
-
-    columns {
-      name    = "fix_versions"
-      type    = "string"
-      comment = "fix"
-    }
-
-    columns {
-      name    = "affects_version"
-      type    = "string"
-      comment = "ver"
-    }
-
-    columns {
-      name    = "planned_version"
-      type    = "string"
-      comment = "plan"
-    }
-
-    columns {
-      name    = "external_effort_md"
-      type    = "string"
-      comment = "ext"
-    }
-
-    columns {
-      name    = "int_effort"
-      type    = "string"
-      comment = "int"
-    }
-    columns {
-      name    = "key"
-      type    = "string"
-      comment = "primary key"
-    }
-
-    columns {
-      name    = "summary"
-      type    = "string"
-      comment = "sum"
-    }
-
-    columns {
-      name    = "compass_group"
-      type    = "string"
-      comment = "grp"
-    }
-
-    columns {
-      name    = "est_ressource_savings_fy_md"
-      type    = "string"
-      comment = "save"
-    }
-
-    columns {
-      name    = "status_group"
-      type    = "string"
-      comment = "status"
-    }
-
-    columns {
-      name    = "created"
-      type    = "string"
-      comment = "cr"
-    }
-
-    columns {
-      name    = "insert_date"
-      type    = "string"
-      comment = "ins"
-    }
-    columns {
-      name    = "reporter"
-      type    = "string"
-      comment = "re"
-    }
-
-    columns {
-      name    = "priority"
-      type    = "string"
-      comment = "pri"
-    }
-
-    columns {
-      name    = "est_budget_of_expenses_keuro"
-      type    = "string"
-      comment = "budg"
-    }
-
-    columns {
-      name    = "app_name"
-      type    = "string"
-      comment = "app"
-    }
-
-    columns {
-      name    = "compass_group_2"
-      type    = "string"
-      comment = "comp"
-    }
-
-    columns {
-      name    = "environment"
-      type    = "string"
-      comment = "env"
-    }
-
-    columns {
-      name    = "compass_group_1"
-      type    = "string"
-      comment = "grp1"
+      comment = "Status of the task"
     }
     columns {
       name    = "assignee"
       type    = "string"
-      comment = "ee"
+      comment = "Assignee of the task"
     }
 
+        columns {
+      name    = "new_feature_link"
+      type    = "string"
+      comment = "Link to the new feature"
+    }
     columns {
       name    = "updated"
       type    = "string"
-      comment = "up"
+      comment = "Updated timestamp"
+    }
+    columns {
+      name    = "priority"
+      type    = "string"
+      comment = "Priority of the task"
+    }
+    columns {
+      name    = "insert_date"
+      type    = "string"
+      comment = "Date of insertion"
+    }
+    columns {
+      name    = "reporter"
+      type    = "string"
+      comment = "Reporter of the task"
+    }
+    columns {
+      name    = "resolutiondate"
+      type    = "string"
+      comment = "Resolution date"
+    }
+    columns {
+      name    = "story_point"
+      type    = "binary"
+      comment = "Story point as binary"
+    }
+    columns {
+      name    = "created"
+      type    = "string"
+      comment = "Creation timestamp"
+    }
+    columns {
+      name    = "type"
+      type    = "string"
+      comment = "Type of task"
+    }
+    columns {
+      name    = "identifier"
+      type    = "string"
+      comment = "Task identifier"
+    }
+    columns {
+      name    = "summary"
+      type    = "string"
+      comment = "Task summary"
+    }
+    columns {
+      name    = "sprint"
+      type    = "string"
+      comment = "Sprint information"
+    }
+    columns {
+      name    = "component"
+      type    = "string"
+      comment = "Component information"
+    }
+    columns {
+      name    = "resolution"
+      type    = "string"
+      comment = "Resolution details"
     }
 
-    columns {
-      name    = "status"
-      type    = "string"
-      comment = "stat"
-    }
 
     # Define other columns similarly
 
-
     ser_de_info {
-      name                  = "CSV"
-      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      name                  = "parquet-serde"
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
     }
-    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+
+    input_format  = "org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat"
     output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
   }
 }
