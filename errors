@@ -1,7 +1,178 @@
-Error: Unsupported argument
+based on the abovecode getting this errors fix this issue 
 
-  on modules/database/gold_bucket/dat_gold_db/tables/grip_t_dot_open_test_one/main.tf line 125, in resource "aws_glue_catalog_table" "table":
- 125:   tblproperties = {
+errors:
 
-An argument named "tblproperties" is not expected here.
+Error: Unterminated template string
 
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 48: No closing marker was found for the string.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 48: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 49: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 50: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 51: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 52: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 53: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 54: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 55: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 56: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 57: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 58: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 59: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 60: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 61: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 62: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 63: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 64: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 65: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 66: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 67: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Invalid multi-line string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 68: Quoted strings may not be split over multiple lines. To produce a
+multi-line string, either use the \n escape to represent a newline character
+or use the "heredoc" multi-line template syntax.
+
+
+Error: Unterminated template string
+
+On modules/database/bronze_bucket/dat_bronze_db/tables/bronze_db_table/main.tf
+line 48: No closing marker was found for the string.
