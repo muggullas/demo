@@ -1,22 +1,13 @@
-based on the below errors and code it is saying no default subnet ensure create a subnet accordingly 
+based on the below code instances were created successfullhy without names provide the instance names as dat_one and dat_two like that provide the updated accordingly
 
-errors:
-
-Error: Error creating DB Instance: InvalidSubnet: No default subnet detected in VPC. Please contact AWS Support to recreate default Subnets.
-        status code: 400, request id: fec959bb-e906-41e7-be06-6fa536ae4335
-
-  on modules/aws-rds/main.tf line 1, in resource "aws_db_instance" "rds_instances":
-   1: resource "aws_db_instance" "rds_instances" {
-
-
-
-Error: Error creating DB Instance: InvalidSubnet: No default subnet detected in VPC. Please contact AWS Support to recreate default Subnets.
-        status code: 400, request id: dfc9fd43-ae59-490f-bfc1-89bd1647076c
-
-  on modules/aws-rds/main.tf line 1, in resource "aws_db_instance" "rds_instances":
-   1: resource "aws_db_instance" "rds_instances" {
 
 tf/modules/aws-rds/main.tf
+
+resource "aws_db_subnet_group" "aws_rds_subnet_group" {
+  name       = "dat_subnet"
+  subnet_ids = ["subnet-0cca75192de9fbbc8", "subnet-0db3fc4b1a19c3d00"]
+}
+
 
 resource "aws_db_instance" "rds_instances" {
   for_each = var.rds_instances
@@ -24,13 +15,13 @@ resource "aws_db_instance" "rds_instances" {
   allocated_storage    = each.value.allocated_storage
   storage_type         = each.value.storage_type
   engine               = "postgres"
-  engine_version       = "12.6"
   instance_class       = each.value.instance_class
   name                 = each.key
   username             = each.value.username
   password             = each.value.password
   skip_final_snapshot  = true
   vpc_security_group_ids = [each.value.security_group_ids]
+  db_subnet_group_name = aws_db_subnet_group.aws_rds_subnet_group.name
   tags = each.value.tags
 }
 
@@ -73,6 +64,7 @@ variable "rds_instances" {
     # Add more RDS instance configurations as needed
   }
 }
+
 
 tf/modules/aws-rds/varabiles.tfvars
 
