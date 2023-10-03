@@ -1,128 +1,45 @@
-based on the below code insetaed of the mention the hard-coded values in the varaibles.tf file please mention all values in varabiles.tfvars
+based on the below code i want to add one more linux instances and windows instances with diffenet configuration then how to modify the below code
 
-tf/modules/aws-rds/main.tf/
+tf/main.tf
 
-
-resource "aws_db_subnet_group" "aws_rds_subnet_group" {
-  name       = "dat_subnet"
-  subnet_ids = ["subnet-063f0de51e67d6a56", "subnet-0db3fc4b1a19c3d00"]
+module "aws_ec2" {
+  source = "./modules/aws-ec2"
+  linux_instance_count = 1
+  windows_instance_count = 1
+  instance_type = var.instance_type
+  windows_ami            = var.windows_ami
+  linux_ami              = var.linux_ami
+  aws_region = var.aws_region
+  allowed_ip_cidr        = var.allowed_ip_cidr
+  subnet_id              = var.subnet_id
+  key_name               = var.key_name
 }
 
+tf/modules/aws-ec2/main.tf
 
-resource "aws_db_instance" "rds_instances" {
-  for_each = var.rds_instances
+# Create Windows and Linux EC2 instances
+resource "aws_instance" "windows" {
+  count         = var.windows_instance_count
+  ami           = var.windows_ami
+  instance_type = var.instance_type
+  subnet_id     = var.subnet_id
+  key_name      = var.key_name
+  security_groups = ["sg-06e4ce3847f477b78"]
 
-  allocated_storage    = each.value.allocated_storage
-  storage_type         = each.value.storage_type
-  engine               = "postgres"
-  instance_class       = each.value.instance_class
-  name                 = each.key
-  username             = each.value.username
-  password             = each.value.password
-  skip_final_snapshot  = true
-  vpc_security_group_ids = [each.value.security_group_ids]
-  db_subnet_group_name = aws_db_subnet_group.aws_rds_subnet_group.name
-  identifier           = each.key
-  tags = each.value.tags
-}
-
-tf/modules/aws-s3/varaibles.tf/
-
-variable "buckets" {
-  type = map(object({
-    acl    = string
-    region = string
-    tags   = map(string)
-    versioning_enabled = bool
-    logging_target_bucket = string
-    cors_rules = list(object({
-      allowed_headers = list(string)
-      allowed_methods = list(string)
-      allowed_origins = list(string)
-      expose_headers  = list(string)
-      max_age_seconds = number
-    }))
-  }))
-  default = {
-    datexamplebucket1 = {
-      acl    = "private"
-      region = "eu-central-1"
-      tags   = {
-        Name = "ExampleBucket1"
-      }
-      versioning_enabled = true
-      logging_target_bucket = "bucket-name"
-      cors_rules = [
-        {
-          allowed_headers = ["Authorization"]
-          allowed_methods = ["GET", "PUT", "POST"]
-          allowed_origins = ["https://example.com"]
-          expose_headers  = ["ETag"]
-          max_age_seconds = 3600
-        },
-      ]
-    }
-    datexamplebucket2 = {
-      acl    = "private"
-      region = "eu-central-1"
-      tags   = {
-        Name = "ExampleBucket1"
-      }
-      versioning_enabled = false
-      logging_target_bucket = "bucket-name"  # Provide a default value for logging_target_bucket
-      cors_rules = [
-        {
-          allowed_headers = ["Authorization"]
-          allowed_methods = ["GET", "PUT", "POST"]
-          allowed_origins = ["https://example.com"]
-          expose_headers  = ["ETag"]
-          max_age_seconds = 3600
-        },
-      ]             # Provide a default empty list for cors_rules
-    }
-    # Add more bucket configurations as needed
+  tags = {
+    Name = "WindowsInstance-${count.index + 1}"
   }
 }
 
-tf/modules/aws-s3/varaibles.tfvars
+resource "aws_instance" "linux" {
+  count         = var.linux_instance_count
+  ami           = var.linux_ami
+  instance_type = var.instance_type
+  subnet_id     = var.subnet_id
+  key_name      = var.key_name
+  security_groups = ["sg-06e4ce3847f477b78"]
 
-buckets = {
-  datexamplebucket1 = {
-    acl    = "private"
-    region = "eu-central-1"
-    tags = {
-      Name = "ExampleBucket1"
-    }
-    versioning_enabled = true
-    logging_target_bucket = "bucket-name"
-    cors_rules = [
-      {
-        allowed_headers = ["Authorization"]
-        allowed_methods = ["GET", "PUT", "POST"]
-        allowed_origins = ["https://example.com"]
-        expose_headers  = ["ETag"]
-        max_age_seconds = 3600
-      },
-    ]
+  tags = {
+    Name = "LinuxInstance-${count.index + 1}"
   }
-  datexamplebucket2 = {
-    acl    = "private"
-    region = "eu-central-1"
-    tags = {
-      Name = "ExampleBucket2"
-    }
-    versioning_enabled = true
-    logging_target_bucket = "bucket-name"
-    cors_rules = [
-      {
-        allowed_headers = ["Authorization"]
-        allowed_methods = ["GET", "PUT", "POST"]
-        allowed_origins = ["https://example.com"]
-        expose_headers  = ["ETag"]
-        max_age_seconds = 3600
-      },
-    ]
-
-  }
-  # Add more bucket configurations as needed
 }
