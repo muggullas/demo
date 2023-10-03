@@ -1,39 +1,6 @@
-module "aws_ec2" {
-  source = "./modules/aws-ec2"
-  linux_instance_count  = 2  # Change this to the desired count of Linux instances
-  windows_instance_count = 2  # Change this to the desired count of Windows instances
-  instance_type         = var.instance_type
-  windows_ami           = var.windows_ami
-  linux_ami             = var.linux_ami
-  aws_region            = var.aws_region
-  allowed_ip_cidr       = var.allowed_ip_cidr
-  subnet_id             = var.subnet_id
-  key_name              = var.key_name
+Terraform AWS S3 Bucket
+Overview
+This Terraform code provisions an AWS S3 bucket. Amazon S3 (Simple Storage Service) is an object storage service that offers industry-leading scalability, data availability, security, and performance. Use this Terraform module to create and manage S3 buckets efficiently.
 
-  # Additional instance configuration
-  linux_instance_configurations = [
-    {
-      instance_type = "t2.micro"  # Change to your desired configuration
-      ami           = "ami-12345678"  # Change to your desired AMI
-      key_name      = "my-key"  # Change to your desired key name
-    },
-    {
-      instance_type = "t2.small"  # Change to your desired configuration
-      ami           = "ami-87654321"  # Change to your desired AMI
-      key_name      = "another-key"  # Change to your desired key name
-    }
-  ]
-
-  windows_instance_configurations = [
-    {
-      instance_type = "t2.micro"  # Change to your desired configuration
-      ami           = "ami-abcdefgh"  # Change to your desired AMI
-      key_name      = "my-key"  # Change to your desired key name
-    },
-    {
-      instance_type = "t2.small"  # Change to your desired configuration
-      ami           = "ami-ijklmnop"  # Change to your desired AMI
-      key_name      = "another-key"  # Change to your desired key name
-    }
-  ]
-}
+Getting Started
+These instructions will help you get started with using this Terraform module.
