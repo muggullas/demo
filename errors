@@ -1,45 +1,39 @@
-based on the below code i want to add one more linux instances and windows instances with diffenet configuration then how to modify the below code
-
-tf/main.tf
-
 module "aws_ec2" {
   source = "./modules/aws-ec2"
-  linux_instance_count = 1
-  windows_instance_count = 1
-  instance_type = var.instance_type
-  windows_ami            = var.windows_ami
-  linux_ami              = var.linux_ami
-  aws_region = var.aws_region
-  allowed_ip_cidr        = var.allowed_ip_cidr
-  subnet_id              = var.subnet_id
-  key_name               = var.key_name
-}
+  linux_instance_count  = 2  # Change this to the desired count of Linux instances
+  windows_instance_count = 2  # Change this to the desired count of Windows instances
+  instance_type         = var.instance_type
+  windows_ami           = var.windows_ami
+  linux_ami             = var.linux_ami
+  aws_region            = var.aws_region
+  allowed_ip_cidr       = var.allowed_ip_cidr
+  subnet_id             = var.subnet_id
+  key_name              = var.key_name
 
-tf/modules/aws-ec2/main.tf
+  # Additional instance configuration
+  linux_instance_configurations = [
+    {
+      instance_type = "t2.micro"  # Change to your desired configuration
+      ami           = "ami-12345678"  # Change to your desired AMI
+      key_name      = "my-key"  # Change to your desired key name
+    },
+    {
+      instance_type = "t2.small"  # Change to your desired configuration
+      ami           = "ami-87654321"  # Change to your desired AMI
+      key_name      = "another-key"  # Change to your desired key name
+    }
+  ]
 
-# Create Windows and Linux EC2 instances
-resource "aws_instance" "windows" {
-  count         = var.windows_instance_count
-  ami           = var.windows_ami
-  instance_type = var.instance_type
-  subnet_id     = var.subnet_id
-  key_name      = var.key_name
-  security_groups = ["sg-06e4ce3847f477b78"]
-
-  tags = {
-    Name = "WindowsInstance-${count.index + 1}"
-  }
-}
-
-resource "aws_instance" "linux" {
-  count         = var.linux_instance_count
-  ami           = var.linux_ami
-  instance_type = var.instance_type
-  subnet_id     = var.subnet_id
-  key_name      = var.key_name
-  security_groups = ["sg-06e4ce3847f477b78"]
-
-  tags = {
-    Name = "LinuxInstance-${count.index + 1}"
-  }
+  windows_instance_configurations = [
+    {
+      instance_type = "t2.micro"  # Change to your desired configuration
+      ami           = "ami-abcdefgh"  # Change to your desired AMI
+      key_name      = "my-key"  # Change to your desired key name
+    },
+    {
+      instance_type = "t2.small"  # Change to your desired configuration
+      ami           = "ami-ijklmnop"  # Change to your desired AMI
+      key_name      = "another-key"  # Change to your desired key name
+    }
+  ]
 }
