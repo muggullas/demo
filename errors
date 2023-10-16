@@ -1,27 +1,9 @@
-# Amazon RDS Terraform Module
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
 
-## Overview
 
-This Terraform module allows you to provision an Amazon RDS instance in AWS (Amazon Web Services). Amazon RDS is a managed relational database service that makes it easy to set up, operate, and scale a relational database in the cloud.
-
-## Getting Started
-
-### Prerequisites
-
-Before using this Terraform module, ensure you have the following prerequisites:
-
-1. **AWS Account**: You should have an AWS account. If you don't have one, you can sign up for [AWS Free Tier](https://aws.amazon.com/free/) to get started.
-
-2. **Terraform Installed**: You must have Terraform installed on your local machine. You can download it from the [official Terraform website](https://www.terraform.io/downloads.html).
-
-3. **AWS CLI Installed**: Ensure you have the AWS Command Line Interface (CLI) installed and configured with your AWS credentials. You can install and configure it by following the [AWS CLI documentation](https://aws.amazon.com/cli/).
-
-4. **SSH Key Pair**: If you intend to connect to your RDS instance, you should have an SSH key pair. You can create one using the `aws ec2 create-key-pair` command.
-
-### Usage
-
-1. Clone the repository to your local machine:
-
-   ```sh
-   git clone https://github.com/your-username/terraform-aws-rds.git
-   cd terraform-aws-rds
+sudo rpm -i gitlab-runner_amd64.rpm
+warning: gitlab-runner_amd64.rpm: Header V4 RSA/SHA512 Signature, key ID 6ba75a4e: NOKEY
+error: Failed dependencies:
+        git is needed by gitlab-runner-16.4.1-1.x86_64
+[ec2-user@ip-10-170-49-171 ~]$ timed out waiting for input: auto-logout
+Connection to 10.170.49.171 closed.
