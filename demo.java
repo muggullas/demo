@@ -1,29 +1,7 @@
-based on the below scripts add this tags into this script:
-
-tags:
-
-Key
-Value
-ManagedBy	environment-operator
-Name	dattdl-prod-nifi-processed-migrated
-
-main.tf
-
-##datdl-prod-glue-deltalake###
-resource "aws_s3_bucket" "glue_deltalake" {
-  bucket = "datdl-prod-glue-deltalake"
-  acl    = "private"
-
-  versioning {
-    enabled = false
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm     = "aws:kms"
-        kms_master_key_id = "arn:aws:kms:eu-central-1:410914755127:key/mrk-4074aa1ee14d4fe5bf4119cd74bde35c"
-      }
-    }
-  }
-}
+ Error: updating S3 Bucket (datdl-prod-glue-deltalake) ACL: AccessControlListNotSupported: The bucket does not allow ACLs
+│       status code: 400, request id: X1MGKXT370QE4TQK, host id: xMJ5RNyt3YG+BjLMCC449/w7X66TgE5gRYFq0pPez1ajT8EJuRFiI0HmCs/fhAtGzi3JUqjKdRLAcaDQmZRXIw==
+│
+│   with module.import_aws_s3.aws_s3_bucket.glue_deltalake,
+│   on modules/import/prod/aws-s3/main.tf line 148, in resource "aws_s3_bucket" "glue_deltalake":
+│  148: resource "aws_s3_bucket" "glue_deltalake" {
+│
