@@ -1,9 +1,1 @@
-sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
-
-
-sudo rpm -i gitlab-runner_amd64.rpm
-warning: gitlab-runner_amd64.rpm: Header V4 RSA/SHA512 Signature, key ID 6ba75a4e: NOKEY
-error: Failed dependencies:
-        git is needed by gitlab-runner-16.4.1-1.x86_64
-[ec2-user@ip-10-170-49-171 ~]$ timed out waiting for input: auto-logout
-Connection to 10.170.49.171 closed.
+https://teams.microsoft.com/l/meetup-join/19%3ameeting_YTdlMGYwZjktYmNiNy00NDFjLWEwYjgtZTRlZWVlOWU4MjFi%40thread.v2/0?context=%7b%22Tid%22%3a%22404b1967-6507-45ab-8a6d-7374a3f478be%22%2c%22Oid%22%3a%22dce4bcda-f30b-423d-9263-baf78b992a32%22%7d
