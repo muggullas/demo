@@ -1,0 +1,2731 @@
+[0KRunning with gitlab-runner 16.11.1 (535ced5f)[0;m
+[0K  on tef-ndl-runner-test-shell DaLMQec8, system ID: s_2abda0f7976c[0;m
+[0K[36;1mResolving secrets[0;m[0;m
+section_start:1737300130:prepare_executor
+[0K[0K[36;1mPreparing the "shell" executor[0;m[0;m
+[0KUsing Shell (bash) executor...[0;m
+section_end:1737300130:prepare_executor
+[0Ksection_start:1737300130:prepare_script
+[0K[0K[36;1mPreparing environment[0;m[0;m
+Running on ci-cd-non-prod-test...
+section_end:1737300130:prepare_script
+[0Ksection_start:1737300130:get_sources
+[0K[0K[36;1mGetting source from Git repository[0;m[0;m
+[32;1mFetching changes with git depth set to 20...[0;m
+Reinitialized existing Git repository in /home/gitlab-runner/builds/DaLMQec8/0/gitlab/fastoss_b/ndl/infrastructure/.git/
+[32;1mChecking out 899097c4 as detached HEAD (ref is feat/test-pii-assign)...[0;m
+Removing gcp/.terraform.lock.hcl
+Removing gcp/.terraform/
+[32;1mSkipping Git submodules setup[0;m
+section_end:1737300131:get_sources
+[0Ksection_start:1737300131:step_script
+[0K[0K[36;1mExecuting "step_script" stage of the job script[0;m[0;m
+[32;1m$ echo "Exporting Proxies for Downloading Libraries from the Internet"[0;m
+Exporting Proxies for Downloading Libraries from the Internet
+[32;1m$ export http_proxy=$HTTP_PROXY[0;m
+[32;1m$ export https_proxy=$HTTPS_PROXY[0;m
+[32;1m$ export no_proxy="169.254.169.254,.de.pri.o2.com,.eu-central-1.eks.amazonaws.com"[0;m
+[32;1m$ terraform --version[0;m
+Terraform v1.10.2
+on linux_amd64
+
+Your version of Terraform is out of date! The latest version
+is 1.10.4. You can update by downloading from https://www.terraform.io/downloads.html
+[32;1m$ echo $CICD_SA_TEST > /tmp/keyfile.json[0;m
+[32;1m$ gcloud auth activate-service-account --key-file=/tmp/keyfile.json[0;m
+Activated service account credentials for: [ci-cd-sa@tefde-gcp-fastoss-test.iam.gserviceaccount.com]
+[32;1m$ gcloud config set account ci-cd-sa@tefde-gcp-fastoss-test.iam.gserviceaccount.com[0;m
+Updated property [core/account].
+[32;1m$ gcloud auth list[0;m
+                              Credentialed Accounts
+ACTIVE  ACCOUNT
+*       ci-cd-sa@tefde-gcp-fastoss-test.iam.gserviceaccount.com
+        ml-ops-cicd-sa@tefde-gcp-fastoss-dssb-dev.iam.gserviceaccount.com
+        project-sa@tefde-gcp-fastoss-dev-gke.iam.gserviceaccount.com
+        project-sa@tefde-gcp-fastoss-test.iam.gserviceaccount.com
+        tefde-gcp-fastoss-ci-cd@tefde-gcp-fastoss-dev-gke.iam.gserviceaccount.com
+
+To set the active account, run:
+    $ gcloud config set account `ACCOUNT`
+
+[32;1m$ cd gcp/[0;m
+[32;1m$ terraform init -backend-config=test.tfvars[0;m
+[0m[1mInitializing the backend...[0m
+[0m[32m
+Successfully configured the backend "gcs"! Terraform will automatically
+use this backend unless the backend configuration changes.[0m
+[0m[1mInitializing modules...[0m
+- manage_data_policy in modules/manage_data_policy
+- pii_policy_tags_test in modules/pii_policy_tags_test
+- policy_tag in modules/policy_tag
+[0m[1mInitializing provider plugins...[0m
+- Finding hashicorp/google versions matching "6.12.0"...
+- Installing hashicorp/google v6.12.0...
+- Installed hashicorp/google v6.12.0 (signed by HashiCorp)
+Terraform has created a lock file [1m.terraform.lock.hcl[0m to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.[0m
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+[32;1m$ terraform validate[0;m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mRedundant ignore_changes element[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  on modules/pii_policy_tags_test/main.tf line 72, in resource "google_bigquery_table" "table":
+[33m│[0m [0m  72: resource [4m"google_bigquery_table"[0m "table" {[0m
+[33m│[0m [0m
+[33m│[0m [0mAdding an attribute name to ignore_changes tells Terraform to ignore future
+[33m│[0m [0mchanges to the argument in configuration after the object has been created,
+[33m│[0m [0mretaining the value originally configured.
+[33m│[0m [0m
+[33m│[0m [0mThe attribute terraform_labels is decided by the provider alone and
+[33m│[0m [0mtherefore there can be no configured value to compare with. Including this
+[33m│[0m [0mattribute in ignore_changes has no effect. Remove the attribute from
+[33m│[0m [0mignore_changes to quiet this warning.
+[33m╵[0m[0m
+[32m[1mSuccess![0m The configuration is valid, but there were some
+validation warnings as shown above.
+[0m
+[32;1m$ terraform plan -var-file="test.tfvars" -var-file="testdep.tfvars"[0;m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_elektroprotokolle_wartung_quality"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_elektroprotokolle_wartung_quality][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_acc_cr88_impactedcustomer_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_acc_cr88_impactedcustomer_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_dataset.dataset["stage_uts"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_contacttype_assignment"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_contacttype_assignment][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_ci_unavailability_ci_join"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_ci_unavailability_ci_join][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_netcool_businessservice_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_netcool_businessservice_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_changerequest_auditlogsyst_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_changerequest_auditlogsyst_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_ci_unavailability_ci_join_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_ci_unavailability_ci_join_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_endb_rlm_audit_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_endb_rlm_audit_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_changerequest_auditlogsyst"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_changerequest_auditlogsyst][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_gk_list_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_gk_list_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_task_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_task_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_worklog"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_worklog][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_change_impacted_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_change_impacted_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_sperrungen"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/sperrungen][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_worklog_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_worklog_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_slm_measurement"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_slm_measurement][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_infrastructure_change"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_infrastructure_change][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_problem_detail"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_problem_detail][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_task_sla"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_task_sla][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_relation_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_relation_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_worklog"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_worklog][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_problem_investigation_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_problem_investigation_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_known_error"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_known_error][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_investigation_worklog_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_investigation_worklog_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_field_enum_values_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_field_enum_values_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_helpdesk_auditlogsystem_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_helpdesk_auditlogsystem_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_helpdesk_auditlogsystem"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_helpdesk_auditlogsystem][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_trouble_quality_closed"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_trouble_quality_closed][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_task_workinfo"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_task_workinfo][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_investigation_associations"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_investigation_associations][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_worklog_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_worklog_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_ci_unavailability_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_ci_unavailability_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_kpi_gftd_trouble_closed"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/kpi_gftd_trouble_closed][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_wartung_access_quality"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_wartung_access_quality][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_complaint_ticket_geo"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_complaint_ticket_geo][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_help_desk_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_help_desk_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ctm_supportgroupfuncrolelookup"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ctm_supportgroupfuncrolelookup][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_attributes"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_attributes][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_h1965"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_h1965][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_task_relations"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_task_relations][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_relationships"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_relationships][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_gk_list"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_gk_list][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_relation_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_relation_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_tag_outage_livecheck"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_tag_outage_livecheck][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_change_task_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_change_task_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_arschema_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_arschema_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_netsite_trn_release"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_netsite_trn_release][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_uts_noinfomail_console_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_uts_noinfomail_console_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_workinfo"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_workinfo][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_task_sla_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_task_sla_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_rms_release_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_rms_release_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_incident_worklog_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_incident_worklog_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_changeapdetailsignature_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_changeapdetailsignature_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_release_manifest_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_release_manifest_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_manifest_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_manifest_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_associations"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_associations][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_task_relations_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_task_relations_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_rel_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_rel_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_bmc_core_bmc_person"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_bmc_core_bmc_person][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_bmc_core_bmc_baseelement_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_bmc_core_bmc_baseelement_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_release_relation_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_release_relation_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_impacted_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_impacted_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_incident_release_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_incident_release_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_h1965_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_h1965_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ctm_people_template_sfr_lookup"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ctm_people_template_sfr_lookup][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_investigation_associations_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_investigation_associations_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_task_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_task_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_report_assignment"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_report_assignment][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_uts_chg_report_assignment"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_uts_chg_report_assignment][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_report_assignment"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_report_assignment][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_complaint_ticket"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_complaint_ticket][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ctm_suport_group"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ctm_suport_group][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_hvprotokolle_wartung_quality"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_hvprotokolle_wartung_quality][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_worklog_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_worklog_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_worklog_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_worklog_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_worklog_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_worklog_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_manifest_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_manifest_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_arschema"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_arschema][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_task"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_task][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_problem_auditlogsystem"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_problem_auditlogsystem][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_associations_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_associations_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_trouble_quality"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_trouble_quality][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_change_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_change_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ctm_people_template"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ctm_people_template][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_rms_associations"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_rms_associations][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_release_worklog_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_release_worklog_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_uts_hpd_report_assignment"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_uts_hpd_report_assignment][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_worklog_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_worklog_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_task_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_task_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_impacted_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_impacted_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_tag_outage_livecheck_geo"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_tag_outage_livecheck_geo][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ctm_people_permission_groups"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ctm_people_permission_groups][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_release_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_release_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_rms_associations_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_rms_associations_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_help_desk_assignment_log"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_help_desk_assignment_log][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_problem_detail"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_problem_detail][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_incident_worklog_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_incident_worklog_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_infrastructure_change_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_infrastructure_change_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_incident_release_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_incident_release_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_problem_investigation"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_problem_investigation][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_task_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_task_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_report_assignment_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_report_assignment_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_incident_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_incident_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_help_desk"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_help_desk][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_task_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_task_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_incident_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_incident_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_kpi_gftd_trouble_open"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/kpi_gftd_trouble_open][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_bmc_core_bmc_baseelement"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_bmc_core_bmc_baseelement][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_change_rel_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_change_rel_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_pbm_investigation_worklog"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_pbm_investigation_worklog][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_associations"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_associations][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_rel_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_rel_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_incident_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_incident_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_change_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_change_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_field_enum_values"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_field_enum_values][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_hpd_report_assignment_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_hpd_report_assignment_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_netcool_businessservice"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_netcool_businessservice][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_task_relations"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_task_relations][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_problem_detail_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_problem_detail_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_task_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_task_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_associations_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_associations_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_acc_cr88_impactedcustomer"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_acc_cr88_impactedcustomer][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_endb_rlm_audit"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_endb_rlm_audit][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_sperrungen_massnahme"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/sperrungen_massnahme][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_rms_release"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_rms_release][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_audit"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_audit][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_ci_unavailability"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_ci_unavailability][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_release_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_release_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_uts_noinfomail_console"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_uts_noinfomail_console][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_slm_measurement_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_slm_measurement_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_change_worklog_details"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_change_worklog_details][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_incident_worklog_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_incident_worklog_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_com_company"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_com_company][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_task_workinfo"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/v_uts_task_workinfo][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_incident_release_details_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_incident_release_details_cmek_copy_temp][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_sam_emailin_sam_audit"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/emailin_sam_audit][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_audit"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_audit][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_chg_changeapdetailsignature"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_chg_changeapdetailsignature][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_tms_auditlogsystem"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_tms_auditlogsystem][0m
+[0m[1mmodule.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_v_uts_task_workinfo_cmek_copy_temp"]: Refreshing state... [id=projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_v_uts_task_workinfo_cmek_copy_temp][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+[31m-[0m/[32m+[0m destroy and then create replacement[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.manage_data_policy.google_bigquery_datapolicy_data_policy.data_policy[0][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "policy_1"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "SHA256"
+        }
+    }
+
+[1m  # module.manage_data_policy.google_bigquery_datapolicy_data_policy.data_policy[1][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "policy_2"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "SHA256"
+        }
+    }
+
+[1m  # module.manage_data_policy.google_bigquery_datapolicy_data_policy_iam_binding.data_policy_iam_binding[0][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy_iam_binding" "data_policy_iam_binding" {
+      [32m+[0m[0m data_policy_id = "policy_1"
+      [32m+[0m[0m etag           = (known after apply)
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m location       = (known after apply)
+      [32m+[0m[0m members        = [
+          [32m+[0m[0m "group:tefde-gcp-fastoss-prod-viewer-ar@gcp.telefonica.de",
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m project        = (known after apply)
+      [32m+[0m[0m role           = "roles/bigquerydatapolicy.maskedReader"
+    }
+
+[1m  # module.manage_data_policy.google_bigquery_datapolicy_data_policy_iam_binding.data_policy_iam_binding[1][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy_iam_binding" "data_policy_iam_binding" {
+      [32m+[0m[0m data_policy_id = "policy_2"
+      [32m+[0m[0m etag           = (known after apply)
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m location       = (known after apply)
+      [32m+[0m[0m members        = [
+          [32m+[0m[0m "group:tefde-gcp-fastoss-prod-viewer-ar@gcp.telefonica.de",
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m project        = (known after apply)
+      [32m+[0m[0m role           = "roles/bigquerydatapolicy.maskedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy.data_policy["Non_PII_Taxonomy/Data Archiving Non-PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "data_policy_archiving_non_pii"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "ALWAYS_NULL"
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy.data_policy["PII_Taxonomy/Credit Card PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "data_policy_credit_card_pii"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "DEFAULT_MASKING_VALUE"
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy.data_policy["PII_Taxonomy/Email PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "data_policy_email_pii"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "DEFAULT_MASKING_VALUE"
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy.data_policy["PII_Taxonomy/Phone PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "data_policy_phone_pii"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "DEFAULT_MASKING_VALUE"
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy.data_policy["PII_Taxonomy/User ID PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy" "data_policy" {
+      [32m+[0m[0m data_policy_id   = "data_policy_user_id_pii"
+      [32m+[0m[0m data_policy_type = "DATA_MASKING_POLICY"
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m location         = "europe-west3"
+      [32m+[0m[0m name             = (known after apply)
+      [32m+[0m[0m policy_tag       = (known after apply)
+      [32m+[0m[0m project          = "tefde-gcp-fastoss-test"
+
+      [32m+[0m[0m data_masking_policy {
+          [32m+[0m[0m predefined_expression = "SHA256"
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy_iam_binding.data_policy_iam_binding["Non_PII_Taxonomy/Data Archiving Non-PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy_iam_binding" "data_policy_iam_binding" {
+      [32m+[0m[0m data_policy_id = "data_policy_archiving_non_pii"
+      [32m+[0m[0m etag           = (known after apply)
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m location       = (known after apply)
+      [32m+[0m[0m members        = [
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m project        = (known after apply)
+      [32m+[0m[0m role           = "roles/bigquerydatapolicy.maskedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy_iam_binding.data_policy_iam_binding["PII_Taxonomy/Email PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy_iam_binding" "data_policy_iam_binding" {
+      [32m+[0m[0m data_policy_id = "data_policy_email_pii"
+      [32m+[0m[0m etag           = (known after apply)
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m location       = (known after apply)
+      [32m+[0m[0m members        = [
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m project        = (known after apply)
+      [32m+[0m[0m role           = "roles/bigquerydatapolicy.maskedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_datapolicy_data_policy_iam_binding.data_policy_iam_binding["PII_Taxonomy/User ID PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_datapolicy_data_policy_iam_binding" "data_policy_iam_binding" {
+      [32m+[0m[0m data_policy_id = "data_policy_user_id_pii"
+      [32m+[0m[0m etag           = (known after apply)
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m location       = (known after apply)
+      [32m+[0m[0m members        = [
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m project        = (known after apply)
+      [32m+[0m[0m role           = "roles/bigquerydatapolicy.maskedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_dataset.dataset["Dataset_Non_PII1"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_dataset" "dataset" {
+      [32m+[0m[0m creation_time              = (known after apply)
+      [32m+[0m[0m dataset_id                 = "dataset_non_pii1"
+      [32m+[0m[0m default_collation          = (known after apply)
+      [32m+[0m[0m delete_contents_on_destroy = false
+      [32m+[0m[0m description                = "Dataset containing tables with non-PII data."
+      [32m+[0m[0m effective_labels           = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m etag                       = (known after apply)
+      [32m+[0m[0m id                         = (known after apply)
+      [32m+[0m[0m is_case_insensitive        = (known after apply)
+      [32m+[0m[0m last_modified_time         = (known after apply)
+      [32m+[0m[0m location                   = "europe-west3"
+      [32m+[0m[0m max_time_travel_hours      = (known after apply)
+      [32m+[0m[0m project                    = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m self_link                  = (known after apply)
+      [32m+[0m[0m storage_billing_model      = (known after apply)
+      [32m+[0m[0m terraform_labels           = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+
+      [32m+[0m[0m access (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_dataset.dataset["Dataset_PII1"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_dataset" "dataset" {
+      [32m+[0m[0m creation_time              = (known after apply)
+      [32m+[0m[0m dataset_id                 = "dataset_pii1"
+      [32m+[0m[0m default_collation          = (known after apply)
+      [32m+[0m[0m delete_contents_on_destroy = false
+      [32m+[0m[0m description                = "Dataset containing tables with PII data."
+      [32m+[0m[0m effective_labels           = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m etag                       = (known after apply)
+      [32m+[0m[0m id                         = (known after apply)
+      [32m+[0m[0m is_case_insensitive        = (known after apply)
+      [32m+[0m[0m last_modified_time         = (known after apply)
+      [32m+[0m[0m location                   = "europe-west3"
+      [32m+[0m[0m max_time_travel_hours      = (known after apply)
+      [32m+[0m[0m project                    = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m self_link                  = (known after apply)
+      [32m+[0m[0m storage_billing_model      = (known after apply)
+      [32m+[0m[0m terraform_labels           = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+
+      [32m+[0m[0m access (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_dataset.dataset["dataset_test_poc"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_dataset" "dataset" {
+      [32m+[0m[0m creation_time              = (known after apply)
+      [32m+[0m[0m dataset_id                 = "dataset_test_poc"
+      [32m+[0m[0m default_collation          = (known after apply)
+      [32m+[0m[0m delete_contents_on_destroy = false
+      [32m+[0m[0m description                = "test"
+      [32m+[0m[0m effective_labels           = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m etag                       = (known after apply)
+      [32m+[0m[0m id                         = (known after apply)
+      [32m+[0m[0m is_case_insensitive        = (known after apply)
+      [32m+[0m[0m last_modified_time         = (known after apply)
+      [32m+[0m[0m location                   = "europe-west3"
+      [32m+[0m[0m max_time_travel_hours      = (known after apply)
+      [32m+[0m[0m project                    = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m self_link                  = (known after apply)
+      [32m+[0m[0m storage_billing_model      = (known after apply)
+      [32m+[0m[0m terraform_labels           = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+
+      [32m+[0m[0m access (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_audit"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1730210354074 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "/SWMiUUDt4bBHNlazb1ktw==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_audit" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1731916306261 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 976263 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 9334 -> (known after apply)
+      [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Job_Id"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Job_Name"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Table_Or_File_Name"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Source_Type"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Start_Time"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "End_Time"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Job_Status"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Source_Count"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Target_Count"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Type"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Origin"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Message"
+                  [31m-[0m[0m type = "STRING"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_audit" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_complaint_ticket"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1733799113056 -> (known after apply)
+      [33m~[0m[0m deletion_protection      = true [33m->[0m[0m false
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+            [90m# (3 unchanged elements hidden)[0m[0m
+        }
+      [33m~[0m[0m etag                     = "DacnmQIm3/vUhQ0kY3AX2Q==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_complaint_ticket" -> (known after apply)
+      [33m~[0m[0m labels                   = {
+          [32m+[0m[0m "frequency" = "15_min"
+          [32m+[0m[0m "label"     = "uat_in_progress"
+          [32m+[0m[0m "status"    = "uat_in_progress"
+        }
+      [33m~[0m[0m last_modified_time       = 1733799113056 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 38585581 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 126046 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Refers to the time of ticket creation."
+                  [31m-[0m[0m name        = "created"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Identifier that references the ticket id raised by customer. The value is an incrementing ID and part of the primary key."
+                  [31m-[0m[0m name        = "id"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Name of the application where complaint ticket was registered."
+                  [31m-[0m[0m name        = "source"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "X-coordinate of registered complaint location in WGS84 format from HDA system"
+                  [31m-[0m[0m name        = "longitude"
+                  [31m-[0m[0m type        = "BIGNUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Y-coordinate of registered complaint location in WGS84 format from HDA system"
+                  [31m-[0m[0m name        = "latitude"
+                  [31m-[0m[0m type        = "BIGNUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Issue type as described by customer. Example: No/Slow data connection, Data connection aborted, SMS cannot be sent, SMS reception not possible etc."
+                  [31m-[0m[0m name        = "issue"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Frequency of issue occurence. Example: Once, Sometimes, Always"
+                  [31m-[0m[0m name        = "frequency"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Location of issue occurence. Example: In the building, Outdoors, In the car, On the train, Anywhere"
+                  [31m-[0m[0m name        = "location"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Example: Since today/For several days/For a long time/Always"
+                  [31m-[0m[0m name        = "since_when"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "It is a free text field where you can insert the location data where you are. Like ZIP_CODE STREET\u00a0 or only ZIP_CODE or only city."
+                  [31m-[0m[0m name        = "search_term"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "MSISDN number of customer"
+                  [31m-[0m[0m name        = "customer_mobile"
+                  [31m-[0m[0m policyTags  = {
+                      [31m-[0m[0m names = [
+                          [31m-[0m[0m "projects/tefde-gcp-fastoss-prod/locations/europe-west3/taxonomies/8802854546574160335/policyTags/8543773959574769962",
+                        ]
+                    }
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Outage check id which references coverage_check_id from hda_outage_livecheck"
+                  [31m-[0m[0m name        = "outage_check_id"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Contains address details or complaint details as shared by customer"
+                  [31m-[0m[0m name        = "comments"
+                  [31m-[0m[0m policyTags  = {
+                      [31m-[0m[0m names = [
+                          [31m-[0m[0m "projects/tefde-gcp-fastoss-prod/locations/europe-west3/taxonomies/8802854546574160335/policyTags/2529500527163910578",
+                        ]
+                    }
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_complaint_ticket" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "frequency"                  = "15_min"
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+          [32m+[0m[0m "label"                      = "uat_in_progress"
+          [32m+[0m[0m "status"                     = "uat_in_progress"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_complaint_ticket_geo"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1733798989448 -> (known after apply)
+      [33m~[0m[0m deletion_protection      = true [33m->[0m[0m false
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+            [90m# (3 unchanged elements hidden)[0m[0m
+        }
+      [33m~[0m[0m etag                     = "FvmpCFWd820orUtyQ/L3Ag==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_complaint_ticket_geo" -> (known after apply)
+      [33m~[0m[0m labels                   = {
+          [32m+[0m[0m "frequency" = "15_min"
+          [32m+[0m[0m "label"     = "uat_in_progress"
+          [32m+[0m[0m "status"    = "uat_in_progress"
+        }
+      [33m~[0m[0m last_modified_time       = 1733798989448 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 18270498 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 135803 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Identifier that references the ticket id raised by customer. The value is an incrementing ID and part of the primary key."
+                  [31m-[0m[0m name        = "id"
+                  [31m-[0m[0m type        = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Refers to the time of ticket creation."
+                  [31m-[0m[0m name        = "timestamp_utc"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Zip code of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "plz"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "City of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "ort"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Municipality of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "municipality"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Street name of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "strasse"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Country of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "land"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Country code of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "land_code"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Region of registered complaint location from Nexiga API call"
+                  [31m-[0m[0m name        = "region"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "X-coordinate of registered complaint location in gk3 format from Nexiga API call"
+                  [31m-[0m[0m name        = "gk3_x"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Y-coordinate of registered complaint location in gk3 format from Nexiga API call"
+                  [31m-[0m[0m name        = "gk3_y"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_complaint_ticket_geo" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "frequency"                  = "15_min"
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+          [32m+[0m[0m "label"                      = "uat_in_progress"
+          [32m+[0m[0m "status"                     = "uat_in_progress"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_tag_outage_livecheck"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1733391440924 -> (known after apply)
+      [33m~[0m[0m deletion_protection      = true [33m->[0m[0m false
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+            [90m# (3 unchanged elements hidden)[0m[0m
+        }
+      [33m~[0m[0m etag                     = "0KSMlK/dnApT6GXW1KKjcw==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_tag_outage_livecheck" -> (known after apply)
+      [33m~[0m[0m labels                   = {
+          [32m+[0m[0m "frequency" = "daily"
+          [32m+[0m[0m "label"     = "uat_in_progress"
+          [32m+[0m[0m "status"    = "uat_in_progress"
+        }
+      [33m~[0m[0m last_modified_time       = 1733391440924 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 168133003 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 1060222 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Identifier that references the livecheck id raised by customer. The value is an incrementing ID and part of the primary key.                                                                                           This ID is a unique number in SpatialBuzz assigned to each customer iteraction and this is the same one for livechecks and complaints.Explanation: customer raise up a livecheck (outage based on S3 bucket right now) and for this check he gets an ID. The customer gets the livecheck answer and decides to open a complaint (this is in hda data being picked up over API). This complaint has the same ID as the livecheck to be able to get analysis like “how many livechecks ends into complaint”?."
+                  [31m-[0m[0m name        = "id"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Refers to the time of livecheck performed."
+                  [31m-[0m[0m name        = "timestamp_utc"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Name of the application where livecheck was performed."
+                  [31m-[0m[0m name        = "source_app"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "X-coordinate of livecheck location in WGS84 format from HDA system"
+                  [31m-[0m[0m name        = "lon"
+                  [31m-[0m[0m type        = "BIGNUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Y-coordinate of livecheck location in WGS84 format from HDA system"
+                  [31m-[0m[0m name        = "lat"
+                  [31m-[0m[0m type        = "BIGNUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "LED_Status (0=Green,1=Amber,2=Red). The status of the network reported to the customer when the livecheck was made."
+                  [31m-[0m[0m name        = "led_status"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "This field describes the service for which customer has issue related to. (e.g. SMS, Data, Reception, Unknown, Voice call or NULL)"
+                  [31m-[0m[0m name        = "service"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_tag_outage_livecheck" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "frequency"                  = "daily"
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+          [32m+[0m[0m "label"                      = "uat_in_progress"
+          [32m+[0m[0m "status"                     = "uat_in_progress"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_hda_hda_tag_outage_livecheck_geo"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1733391525299 -> (known after apply)
+      [33m~[0m[0m deletion_protection      = true [33m->[0m[0m false
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+            [90m# (3 unchanged elements hidden)[0m[0m
+        }
+      [33m~[0m[0m etag                     = "3R3I8zlQUsFiC+UpyA8xvg==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_tag_outage_livecheck_geo" -> (known after apply)
+      [33m~[0m[0m labels                   = {
+          [32m+[0m[0m "frequency" = "daily"
+          [32m+[0m[0m "label"     = "uat_in_progress"
+          [32m+[0m[0m "status"    = "uat_in_progress"
+        }
+      [33m~[0m[0m last_modified_time       = 1733391525299 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 124026802 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 988600 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Identifier that references the livecheck id raised by customer. The value is an incrementing ID and part of the primary key. This ID is a unique number in SpatialBuzz assigned to each customer iteraction and this is the same one for livechecks and complaints. Explanation: customer raise up a livecheck (outage based on S3 bucket right now) and for this check he gets an ID. The customer gets the livecheck answer and decides to open a complaint (this is in hda data being picked up over API). This complaint has the same ID as the livecheck to be able to get analysis like “how many livechecks ends into complaint”?."
+                  [31m-[0m[0m name        = "id"
+                  [31m-[0m[0m type        = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Refers to the time of livecheck performed."
+                  [31m-[0m[0m name        = "timestamp_utc"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Zip code of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "plz"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "City of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "ort"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Municipality of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "municipality"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Street name of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "strasse"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Country of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "land"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Country code of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "land_code"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Region of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "region"
+                  [31m-[0m[0m type        = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "X-coordinate of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "gk3_x"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "Y-coordinate of livecheck location from Nexiga API call"
+                  [31m-[0m[0m name        = "gk3_y"
+                  [31m-[0m[0m type        = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_hda/tables/hda_tag_outage_livecheck_geo" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "frequency"                  = "daily"
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+          [32m+[0m[0m "label"                      = "uat_in_progress"
+          [32m+[0m[0m "status"                     = "uat_in_progress"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_emailin_sam_audit"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759039986 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "8VrDHUCSt80KyghKhtPHxg==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/emailin_sam_audit" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983055308 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 207132 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 1678 -> (known after apply)
+      [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Job_Id"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Job_Name"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Table_Or_File_Name"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Source_Type"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Start_Time"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "End_Time"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Job_Status"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Source_Count"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Target_Count"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Type"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Origin"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "Message"
+                  [31m-[0m[0m type = "STRING"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/emailin_sam_audit" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (7 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_elektroprotokolle_wartung_quality"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759041350 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "RJwej7r3fwzLT2QaVV6EEg==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_elektroprotokolle_wartung_quality" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983056565 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 1163701 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 7998 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Lfd"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Wartungs_ID"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "STO_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Strasse"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "PLZ"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Ort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Wartung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Wartungsfall"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Pruefung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Vollstaendig_Fehlerfrei"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Summe_Defects"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Yield"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Auffalligkeiten_A"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zum_Protokoll"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Schlagwort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_elektroprotokolle_wartung_quality" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_hvprotokolle_wartung_quality"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759044034 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "J9K3EcHT/XDotozuRYhghQ==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_hvprotokolle_wartung_quality" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983058776 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 878714 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 6983 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Lfd"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Wartungs_ID"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "STO_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Strasse"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "PLZ"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Ort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Wartung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Wartungsfall"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Pruefung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Vollstaendig_Fehlerfrei"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Summe_Defects"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Yield"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Auffalligkeiten_A"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zum_Protokoll"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Schlagwort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_hvprotokolle_wartung_quality" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_trouble_quality"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759045865 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "19ojT3onECwQD/sN2SDoZA==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_trouble_quality" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983061626 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 1095422 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 4961 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Lfd"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Trouble_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Sto_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Festgestellt_bei_nur_bei_Wartung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_des_Trouble"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Prio"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Angelegt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Bewertung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Beschreibung_Bild_und_Text_korrekt"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie_korrekt"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_und_Prio_korrekt"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "TT_richtig_zugeordnet_Massnahme"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "TT_gerechtfertigt"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Optional_TT_fachgerecht_behoben"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Summe_Defects"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Yield"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Gewichtung_ungerechtfertigt"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zur_Bewertung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Schlagwort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Modellvorgabe"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Sonstige_Bemerkung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_trouble_quality" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_trouble_quality_closed"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759048357 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "pD1DnoW0pIwI0aToH6VcJw==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_trouble_quality_closed" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983063041 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 279287 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 1995 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Lfd"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Trouble_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Sto_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Angelegt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Erledigt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Bewertung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "TT_fachgerecht_behoben"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Doku_abgelegt_vollstaendig"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Summe_Defects"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Yield"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_trouble_quality_closed" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_gftd_wartung_access_quality"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759049748 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "aQlIYTsoWwzqCyB5AqAorQ==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_wartung_access_quality" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983064488 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 470355 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 1998 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Lfd"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Wartungs_ID"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Sto_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Wartungsfall"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Ort_Strasse"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_der_Wartung"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Datum_des_Audits"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Allgemein"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Sicherheits_einrichtung"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Metall_konstruktion"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Elektro_installation"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Klima_versorgung"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Blitzschutz_system"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Protokolle_HV_Wartung"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Summe_Defects"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Yield"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Auffaellig_keiten_A"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zu_Allgemein"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zu_Sicherheitseinrichtungen"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zu_Metallkonstruktion"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zu_Elektroinstallation"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Bemerkung_zu_Klimaversorgung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "TELXIUS_Blitzschutzsystem"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "TELXIUS_Protokolle_HV_Wartung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Schlagwort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Region"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/gftd_wartung_access_quality" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_kpi_gftd_trouble_closed"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759051416 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "3J1s6YvAlUDDxkxJvkTUCw==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/kpi_gftd_trouble_closed" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983065881 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 8446627 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 44875 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Trouble_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Standort_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "festgestellt_bei"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_des_Troubles"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Prioritaet"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Angelegt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Feststelldatum"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Plan_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Soll_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Erledigt_am_Trouble"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Beauftragt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Name_beauftr_Firma"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Status"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "erledigt_am_Massnahme"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Heute"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/kpi_gftd_trouble_closed" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_kpi_gftd_trouble_open"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759054572 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "JovbjZGwcfpo+hFRGhitSg==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/kpi_gftd_trouble_open" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983068661 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 10064656 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 56603 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Trouble_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Standort_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "festgestellt_bei"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_des_Troubles"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Prioritaet"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Angelegt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Feststelldatum"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Plan_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Soll_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Erledigt_am__Trouble"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Beauftragt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Name__beauftr__Firma"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Status"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "erledigt_am__Massnahme"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Heute"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/kpi_gftd_trouble_open" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_sperrungen"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759056315 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "9cVr3qzkvndb6DZju0ATFQ==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/sperrungen" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983070358 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 5062703 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 14278 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Standort_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "PLZ"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Ort"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Gebaeudeart"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Betroffenes_Element"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Gesperrt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Aufgehoben_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_der_Sperrung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Grund"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Grund_Beschreibung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Trouble_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_des_Troubles"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Prioritaet"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Feststelldatum"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Soll_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Plan_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Erledigt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Festgestellt_bei"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Standortsperrung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/sperrungen" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_sam_sperrungen_massnahme"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1724759058054 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m etag                     = "suAbnGa/DRuPV8Jzm3xznw==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/sperrungen_massnahme" -> (known after apply)
+      [31m-[0m[0m labels                   = {} [90m-> null[0m[0m
+      [33m~[0m[0m last_modified_time       = 1733983071943 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 15239215 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 46384 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Standort_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Gesperrt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Aufgehoben_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_der_Sperrung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Grund"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Grund_Beschreibung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Trouble_Nr"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Art_des_Troubles"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Kategorie"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Prioritaet"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Feststelldatum"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Soll_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Plan_Termin"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Erledigt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Festgestellt_bei"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Standortsperrung"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Name_beauftr_Firma"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Beauftragt_am"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "erledigt_am_1"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "Status"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m description = "timestamp of data loading. to extract value in cet, use select (extract(datetime from LOAD_TIME_UTC at time zone 'cet'))"
+                  [31m-[0m[0m name        = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type        = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_sam/tables/sperrungen_massnahme" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m time_partitioning {
+          [31m-[0m[0m expiration_ms            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m field                    = "LOAD_TIME_UTC" [90m-> null[0m[0m
+          [31m-[0m[0m require_partition_filter = false [90m-> null[0m[0m
+          [31m-[0m[0m type                     = "DAY" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_uts_uts_ast_contacttype_assignment"][0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "google_bigquery_table" "table" {
+      [33m~[0m[0m creation_time            = 1733202997977 -> (known after apply)
+      [33m~[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+            [90m# (2 unchanged elements hidden)[0m[0m
+        }
+      [33m~[0m[0m etag                     = "1kDG7zpwluA21oo9HszUVQ==" -> (known after apply)
+      [33m~[0m[0m expiration_time          = 0 -> (known after apply)
+      [33m~[0m[0m id                       = "projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_contacttype_assignment" -> (known after apply)
+      [33m~[0m[0m labels                   = {
+          [32m+[0m[0m "frequency" = "15_min"
+          [32m+[0m[0m "status"    = "uat_in_progress"
+        }
+      [33m~[0m[0m last_modified_time       = 1733202997977 -> (known after apply)
+      [33m~[0m[0m location                 = "europe-west3" -> (known after apply)
+      [33m~[0m[0m num_bytes                = 16226 -> (known after apply)
+      [33m~[0m[0m num_long_term_bytes      = 0 -> (known after apply)
+      [33m~[0m[0m num_rows                 = 32 -> (known after apply)
+      [31m-[0m[0m resource_tags            = {} [90m-> null[0m[0m
+      [33m~[0m[0m schema                   = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SEQUENCE"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "REQUEST_ID"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DATALOAD_ACTION"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SUBMITTER"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "CREATE_DATE"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "ASSIGNED_TO"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SOURCE_COMPANY"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "LAST_MODIFIED_BY"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "EMAILAPPENDED"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "MODIFIED_DATE"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DESTINATION_COMPANY"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "STATUS"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "INFORM_BY_EMAIL"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "MARKASDELETED"
+                  [31m-[0m[0m type = "NUMERIC"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SHORT_DESCRIPTION"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "CONTACTTYPE"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DESTINATION_EMAILADDRESS"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DESTINATION_RECONCILIATIONIDEN"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DESTINATION_INSTANCEID"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "PHONENUMBERBUSINESS"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DESTINATION_NAME"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DESTINATION_CLASS_NAME"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SOURCE_RECONCILIATIONIDENTITY"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SOURCE_INSTANCEID"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SOURCE_NAME"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "SOURCE_CLASS_NAME"
+                  [31m-[0m[0m type = "STRING"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "DQ_INDICATOR"
+                  [31m-[0m[0m type = "INTEGER"
+                },
+              [31m-[0m[0m {
+                  [31m-[0m[0m mode = "NULLABLE"
+                  [31m-[0m[0m name = "LOAD_TIME_UTC"
+                  [31m-[0m[0m type = "TIMESTAMP"
+                },
+            ]
+        ) -> (known after apply)
+      [33m~[0m[0m self_link                = "https://bigquery.googleapis.com/bigquery/v2/projects/tefde-gcp-fastoss-test/datasets/stage_uts/tables/uts_ast_contacttype_assignment" -> (known after apply)
+      [33m~[0m[0m terraform_labels         = {
+          [32m+[0m[0m "frequency"                  = "15_min"
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+          [32m+[0m[0m "status"                     = "uat_in_progress"
+        }
+      [33m~[0m[0m type                     = "TABLE" -> (known after apply)
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m encryption_configuration { [31m# forces replacement[0m[0m
+          [31m-[0m[0m kms_key_name    = "projects/tefde-gcp-fastoss-test/locations/europe-west3/keyRings/keyring-thales-ew3/cryptoKeys/ndl-test-kms-thales-key-ew3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.pii_policy_tags_test.google_bigquery_table.table["stage_uts_v_uts_task_workinfo_cmek_copy_temp"][0m will be created
+[0m  [32m+[0m[0m resource "google_bigquery_table" "table" {
+      [32m+[0m[0m creation_time            = (known after apply)
+      [32m+[0m[0m dataset_id               = "stage_uts"
+      [32m+[0m[0m deletion_protection      = true
+      [32m+[0m[0m effective_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m etag                     = (known after apply)
+      [32m+[0m[0m expiration_time          = (known after apply)
+      [32m+[0m[0m id                       = (known after apply)
+      [32m+[0m[0m labels                   = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m last_modified_time       = (known after apply)
+      [32m+[0m[0m location                 = (known after apply)
+      [32m+[0m[0m num_bytes                = (known after apply)
+      [32m+[0m[0m num_long_term_bytes      = (known after apply)
+      [32m+[0m[0m num_rows                 = (known after apply)
+      [32m+[0m[0m project                  = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m require_partition_filter = false
+      [32m+[0m[0m schema                   = (known after apply)
+      [32m+[0m[0m self_link                = (known after apply)
+      [32m+[0m[0m table_id                 = "v_uts_task_workinfo_cmek_copy_temp"
+      [32m+[0m[0m terraform_labels         = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m type                     = (known after apply)
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag.policy_tags["Non_PII_Taxonomy/Data Archiving Non-PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tags" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m display_name      = "Data Archiving Non-PII Tag"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag.policy_tags["PII_Taxonomy/Credit Card PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tags" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m display_name      = "Credit Card PII Tag"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag.policy_tags["PII_Taxonomy/Email PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tags" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m display_name      = "Email PII Tag"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag.policy_tags["PII_Taxonomy/Phone PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tags" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m display_name      = "Phone PII Tag"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag.policy_tags["PII_Taxonomy/User ID PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tags" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m display_name      = "User ID PII Tag"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag_iam_binding.fine_grained_access["Non_PII_Taxonomy/Data Archiving Non-PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag_iam_binding" "fine_grained_access" {
+      [32m+[0m[0m etag       = (known after apply)
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m members    = [
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m policy_tag = (known after apply)
+      [32m+[0m[0m role       = "roles/datacatalog.categoryFineGrainedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag_iam_binding.fine_grained_access["PII_Taxonomy/Email PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag_iam_binding" "fine_grained_access" {
+      [32m+[0m[0m etag       = (known after apply)
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m members    = [
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m policy_tag = (known after apply)
+      [32m+[0m[0m role       = "roles/datacatalog.categoryFineGrainedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_policy_tag_iam_binding.fine_grained_access["PII_Taxonomy/User ID PII Policy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag_iam_binding" "fine_grained_access" {
+      [32m+[0m[0m etag       = (known after apply)
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m members    = [
+          [32m+[0m[0m "user:nq10052885@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m policy_tag = (known after apply)
+      [32m+[0m[0m role       = "roles/datacatalog.categoryFineGrainedReader"
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_taxonomy.taxonomy["Non_PII_Taxonomy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_taxonomy" "taxonomy" {
+      [32m+[0m[0m activated_policy_types = [
+          [32m+[0m[0m "FINE_GRAINED_ACCESS_CONTROL",
+        ]
+      [32m+[0m[0m description            = "Taxonomy for non-PII data"
+      [32m+[0m[0m display_name           = "Non-PII Taxonomy"
+      [32m+[0m[0m id                     = (known after apply)
+      [32m+[0m[0m name                   = (known after apply)
+      [32m+[0m[0m project                = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m region                 = "europe-west3"
+    }
+
+[1m  # module.pii_policy_tags_test.google_data_catalog_taxonomy.taxonomy["PII_Taxonomy"][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_taxonomy" "taxonomy" {
+      [32m+[0m[0m activated_policy_types = [
+          [32m+[0m[0m "FINE_GRAINED_ACCESS_CONTROL",
+        ]
+      [32m+[0m[0m description            = "Taxonomy for PII data"
+      [32m+[0m[0m display_name           = "PII Taxonomy"
+      [32m+[0m[0m id                     = (known after apply)
+      [32m+[0m[0m name                   = (known after apply)
+      [32m+[0m[0m project                = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m region                 = "europe-west3"
+    }
+
+[1m  # module.policy_tag.google_data_catalog_policy_tag.policy_tag[0][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tag" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m description       = "Policy for handling business email data"
+      [32m+[0m[0m display_name      = "Business Email"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.policy_tag.google_data_catalog_policy_tag.policy_tag[1][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag" "policy_tag" {
+      [32m+[0m[0m child_policy_tags = (known after apply)
+      [32m+[0m[0m description       = "Policy for handling business email data"
+      [32m+[0m[0m display_name      = "Business Email"
+      [32m+[0m[0m id                = (known after apply)
+      [32m+[0m[0m name              = (known after apply)
+      [32m+[0m[0m taxonomy          = (known after apply)
+    }
+
+[1m  # module.policy_tag.google_data_catalog_policy_tag_iam_binding.fine_grained_access[0][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag_iam_binding" "fine_grained_access" {
+      [32m+[0m[0m etag       = (known after apply)
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m members    = [
+          [32m+[0m[0m "group:tefde-gcp-fastoss-prod-viewer-ar@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m policy_tag = (known after apply)
+      [32m+[0m[0m role       = "roles/datacatalog.categoryFineGrainedReader"
+    }
+
+[1m  # module.policy_tag.google_data_catalog_policy_tag_iam_binding.fine_grained_access[1][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_policy_tag_iam_binding" "fine_grained_access" {
+      [32m+[0m[0m etag       = (known after apply)
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m members    = [
+          [32m+[0m[0m "group:tefde-gcp-fastoss-prod-viewer-ar@gcp.telefonica.de",
+        ]
+      [32m+[0m[0m policy_tag = (known after apply)
+      [32m+[0m[0m role       = "roles/datacatalog.categoryFineGrainedReader"
+    }
+
+[1m  # module.policy_tag.google_data_catalog_taxonomy.taxonomy[0][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_taxonomy" "taxonomy" {
+      [32m+[0m[0m description  = "Taxonomy for sensitive data management"
+      [32m+[0m[0m display_name = "Sensitive Data Taxonomy"
+      [32m+[0m[0m id           = (known after apply)
+      [32m+[0m[0m name         = (known after apply)
+      [32m+[0m[0m project      = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m region       = "europe-west3"
+    }
+
+[1m  # module.policy_tag.google_data_catalog_taxonomy.taxonomy[1][0m will be created
+[0m  [32m+[0m[0m resource "google_data_catalog_taxonomy" "taxonomy" {
+      [32m+[0m[0m description  = "Taxonomy for sensitive data management"
+      [32m+[0m[0m display_name = "Test-taxonomy"
+      [32m+[0m[0m id           = (known after apply)
+      [32m+[0m[0m name         = (known after apply)
+      [32m+[0m[0m project      = "tefde-gcp-fastoss-test"
+      [32m+[0m[0m region       = "europe-west3"
+    }
+
+[1mPlan:[0m 48 to add, 0 to change, 16 to destroy.
+[0m
+Changes to Outputs:
+  [33m~[0m[0m tables_map = {
+      [33m~[0m[0m stage_hda_hda_audit                                         = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_emailin_sam_audit                                 = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_gftd_elektroprotokolle_wartung_quality            = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_gftd_hvprotokolle_wartung_quality                 = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_gftd_trouble_quality                              = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_gftd_trouble_quality_closed                       = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_gftd_wartung_access_quality                       = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_kpi_gftd_trouble_closed                           = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_kpi_gftd_trouble_open                             = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_sperrungen                                        = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+      [33m~[0m[0m stage_sam_sperrungen_massnahme                              = {
+          [33m~[0m[0m deletion_protection      = false [33m->[0m[0m true
+            [90m# (7 unchanged attributes hidden)[0m[0m
+        }
+        [90m# (132 unchanged attributes hidden)[0m[0m
+    }
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mRedundant ignore_changes element[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  on modules/pii_policy_tags_test/main.tf line 72, in resource "google_bigquery_table" "table":
+[33m│[0m [0m  72: resource [4m"google_bigquery_table"[0m "table" {[0m
+[33m│[0m [0m
+[33m│[0m [0mAdding an attribute name to ignore_changes tells Terraform to ignore future
+[33m│[0m [0mchanges to the argument in configuration after the object has been created,
+[33m│[0m [0mretaining the value originally configured.
+[33m│[0m [0m
+[33m│[0m [0mThe attribute terraform_labels is decided by the provider alone and
+[33m│[0m [0mtherefore there can be no configured value to compare with. Including this
+[33m│[0m [0mattribute in ignore_changes has no effect. Remove the attribute from
+[33m│[0m [0mignore_changes to quiet this warning.
+[33m╵[0m[0m
+[90m
+─────────────────────────────────────────────────────────────────────────────[0m
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.
+section_end:1737300145:step_script
+[0Ksection_start:1737300145:cleanup_file_variables
+[0K[0K[36;1mCleaning up project directory and file based variables[0;m[0;m
+section_end:1737300145:cleanup_file_variables
+[0K[32;1mJob succeeded[0;m

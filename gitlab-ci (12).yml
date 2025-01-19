@@ -1,0 +1,85 @@
+stages: 
+  - import         
+  - plan
+  - apply
+
+variables:
+  HTTPS_PROXY: http://10.169.127.8:8080
+  HTTP_PROXY: http://10.169.127.8:8080
+
+# Import GCP resources to Terraform state
+tf-import:
+  stage: import
+  tags:
+    - tef-ndl-runner-test-shell
+  before_script:
+    - echo "Exporting Proxies for Downloading Libraries from the Internet"
+    - export http_proxy=$HTTP_PROXY
+    - export https_proxy=$HTTPS_PROXY
+    - export no_proxy="169.254.169.254,.de.pri.o2.com,.eu-central-1.eks.amazonaws.com"
+    - echo $CICD_SA_TEST > /tmp/keyfile.json
+    - gcloud auth activate-service-account --key-file=/tmp/keyfile.json
+    - gcloud config set account ci-cd-sa@$project_id.iam.gserviceaccount.com
+    - gcloud auth list
+    - cd gcp/
+  script:
+    # Import the existing taxonomy into Terraform state
+    - terraform init -backend-config=test.tfvars
+    - terraform state list
+    #- terraform state rm 'module.import_policy_tags.google_bigquery_table.table["table_2"]'
+    #- terraform state rm 'module.import_policy_tags.google_bigquery_table.table["table_3"]'
+   # - terraform import -var-file=test.tfvars 'module.import_policy_tags.google_data_catalog_policy_tag.imported_policy_tags["Phone Number"]' projects/tefde-gcp-fastoss-test/locations/europe-west3/taxonomies/1315065854995894080/policyTags/6294048365320708356
+    #- terraform import -var-file=test.tfvars 'module.import_policy_tags.google_bigquery_table.table["table2"]' projects/tefde-gcp-fastoss-test/datasets/terraform_pii_test1/tables/table2
+
+    #- terraform import -var-file=test.tfvars 'module.import_policy_tags.google_bigquery_table.table["table3"]' projects/tefde-gcp-fastoss-test/datasets/terraform_pii_test1/tables/table3
+
+    #- terraform import -var-file=test.tfvars module.import_policy_tags.google_data_catalog_taxonomy.imported_taxonomy projects/tefde-gcp-fastoss-test/locations/europe-west3/taxonomies/1315065854995894080
+   # - terraform import -var-file=test.tfvars 'module.import_policy_tags.google_data_catalog_policy_tag.imported_policy_tags["Email PII Policy"]' projects/tefde-gcp-fastoss-test/locations/europe-west3/taxonomies/1315065854995894080/policyTags/6381223134216683632
+  rules:    
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+# Test Environment Plan
+tf-plan-test:
+  stage: plan
+  tags:
+    - tef-ndl-runner-test-shell
+  before_script:
+    - echo "Exporting Proxies for Downloading Libraries from the Internet"
+    - export http_proxy=$HTTP_PROXY
+    - export https_proxy=$HTTPS_PROXY
+    - export no_proxy="169.254.169.254,.de.pri.o2.com,.eu-central-1.eks.amazonaws.com"  
+    - terraform --version   
+  script:
+    - echo $CICD_SA_TEST > /tmp/keyfile.json
+    - gcloud auth activate-service-account --key-file=/tmp/keyfile.json
+    - gcloud config set account ci-cd-sa@tefde-gcp-fastoss-test.iam.gserviceaccount.com
+    - gcloud auth list
+    - cd gcp/
+    - terraform init -backend-config=test.tfvars
+    - terraform validate
+    - terraform plan -var-file="test.tfvars" -var-file="testdep.tfvars"
+  rules:    
+   - if: $CI_PIPELINE_SOURCE == "web"
+
+
+# Development Environment Apply (Deploy)
+tf-apply-test:
+  stage: apply
+  tags:
+    - tef-ndl-runner-test-shell
+  before_script:
+    - echo "Exporting Proxies for Downloading Libraries from the Internet"
+    - export http_proxy=$HTTP_PROXY
+    - export https_proxy=$HTTPS_PROXY
+    - export no_proxy="169.254.169.254,.de.pri.o2.com,.eu-central-1.eks.amazonaws.com"
+    - terraform --version   
+  script:
+    - echo $CICD_SA_TEST > /tmp/keyfile.json
+    - gcloud auth activate-service-account --key-file=/tmp/keyfile.json
+    - gcloud config set account ci-cd-sa@tefde-gcp-fastoss-test.iam.gserviceaccount.com
+    - gcloud auth list
+    - cd gcp/
+    - terraform init -backend-config=test.tfvars
+    - terraform apply --auto-approve -var-file="test.tfvars" -var-file="testdep.tfvars"
+  rules:
+       - if: $CI_PIPELINE_SOURCE == "web"
